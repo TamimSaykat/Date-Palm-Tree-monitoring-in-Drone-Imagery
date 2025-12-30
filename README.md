@@ -32,5 +32,39 @@ We use the **Dat Palm Fx** dataset (Roboflow Universe), consisting of **4,802 RG
 </p>
 
 
+### Data Augmentation
+
+We apply Albumentations-based augmentation **only on the training split** to improve robustness against:
+
+* viewpoint/scale variation
+* illumination changes
+* cluttered backgrounds (soil, shadows, buildings)
+
+
+| Split     | Original | Augmented |     Extra |   Labels |
+| --------- | -------: | --------: | --------: | -------: |
+| Train     |     3855 |      5355 |     +1500 |     5355 |
+| Valid     |      200 |       200 |        +0 |      200 |
+| Test      |      747 |       747 |        +0 |      747 |
+| **Total** | **4802** |  **6302** | **+1500** | **6302** |
+
+### Models & Implementation
+
+🧱 Backbone benchmarking  
+- Compared: YOLOv10s / YOLOv11s / YOLOv12s  
+- Same protocol: 640×640, identical split, identical training recipe  
+- Chosen baseline: YOLOv12s
+
+🧠 Learning strategies (low-label regime)  
+- Soft Teacher: teacher–student pseudo-labeling  
+- BYOL / SimCLR: self-supervised pretraining on unlabeled UAV images  
+  (pretrain backbone as encoder → reattach head → fine-tune)
+
+🧩 Proposed model  
+- BYOL → YOLOv12s
+
+
+
+
 
 
