@@ -63,7 +63,7 @@ We apply Albumentations-based augmentation **only on the training split** to imp
 🧩 Proposed model  
 - BYOL → YOLOv12s
 
-
+![BYOL Self-Supervised Learning Architecture](assets/BYOLArchitecture.jpg)
 
 
 
