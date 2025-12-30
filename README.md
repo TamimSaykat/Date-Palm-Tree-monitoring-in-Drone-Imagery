@@ -61,7 +61,9 @@ We apply Albumentations-based augmentation **only on the training split** to imp
   (pretrain backbone as encoder → reattach head → fine-tune)
 
 🧩 Proposed model  
-- BYOL → YOLOv12s
+In our experiments, BYOL produced the most effective representations and achieved the highest
+accuracy after fine-tuning. For this reason, our proposed system uses a BYOL-pretrained YOLOv12s backbone as the final
+detection model.
 
 ![BYOL Self-Supervised Learning Architecture](assets/BYOLArchitecture.jpg)
 
