@@ -71,7 +71,8 @@ In our experiments, BYOL produced the most effective representations and achieve
 accuracy after fine-tuning. For this reason, our proposed system uses a BYOL-pretrained YOLOv12s backbone as the final
 detection model.
 
-![BYOL Self-Supervised Learning Architecture](assets/BYOLArchitecture.jpg)
+**Figure:** BYOL pretraining architecture used to initialize the YOLOv12s backbone. The online network (encoder–projector–predictor) learns to match the target network (encoder–projector), updated via EMA, across two augmented views of the same UAV image.
+![BYOL Self-Supervised Learning Architecture](assets/Figure5.png)
 
 
 
