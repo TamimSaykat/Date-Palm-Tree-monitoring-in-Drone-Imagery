@@ -250,13 +250,8 @@ To support real-world use by agronomists and plantation managers, we deploy the 
   - bounding boxes
   - class labels (**healthy**, **abnormal**, **dead**)
   - confidence scores
-- Output is rendered as color-coded overlays on the original image
-- The app also summarizes per-image statistics (e.g., total palms and health-class distribution) for logging/export
 
 ![Web Application](https://raw.githubusercontent.com/TamimSaykat/Date-Palm-Tree-monitoring-in-Drone-Imagery/main/assets/Web%20Application%20Test.png)
-
-
-
 
 **Figure 14. Smart Palm Tree Monitoring web interface for field deployment: the left panel displays the uploaded UAV image, while the right panel shows BYOL–YOLOv12s detection outputs with class labels and confidence scores overlaid for rapid, interpretable inspection.**
 
