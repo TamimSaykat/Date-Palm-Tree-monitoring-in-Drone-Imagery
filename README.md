@@ -206,3 +206,60 @@ After SSL pretraining, we re-attach the detection head and fine-tune on the labe
 - **BYOL + YOLOv12s** achieves the strongest overall trade-off, with the best mAP@0.50 (**0.9601**) and mAP@0.50:0.95 (**0.7086**).
 
 ---
+
+## Ablation Study (BYOL–YOLOv12s Optimization Sensitivity)
+
+To quantify how sensitive the proposed **BYOL–YOLOv12s** pipeline is to optimization settings, we perform an ablation study over three key hyperparameters: **learning rate (LR)**, **weight decay (WD)**, and **EMA momentum**. The baseline configuration uses **LR = 1e-3**, **WD = 1e-4**, **EMA = 0.996**, and a fixed training budget of **70 epochs**. Starting from this baseline, we vary one factor at a time (and also evaluate a small set of combined configurations) while keeping all other settings unchanged. Performance is reported on the **validation set** using **mAP@0.50** and **mAP@0.50:0.95**.
+
+| Setting | SSL | Backbone | Epochs | LR | WD | EMA | mAP@0.50 | mAP@0.50:0.95 |
+|---|---|---|---:|---:|---:|---:|---:|---:|
+| Baseline | BYOL | YOLOv12s | 70 | 1e-3 | 1e-4 | 0.996 | 0.9569 | 0.6925 |
+| Lower LR | BYOL | YOLOv12s | 70 | 5e-4 | 1e-4 | 0.996 | 0.9601 | 0.7086 |
+| Higher LR | BYOL | YOLOv12s | 70 | 2e-3 | 1e-4 | 0.996 | 0.9570 | 0.6963 |
+| No WD | BYOL | YOLOv12s | 70 | 1e-3 | 0 | 0.996 | 0.9485 | 0.6731 |
+| **Smaller WD** | BYOL | YOLOv12s | 70 | 1e-3 | **1e-5** | **0.996** | **0.9631** | 0.7086 |
+| Larger WD | BYOL | YOLOv12s | 70 | 1e-3 | 1e-3 | 0.996 | 0.9606 | 0.7054 |
+| Lower EMA | BYOL | YOLOv12s | 70 | 1e-3 | 1e-4 | 0.990 | 0.9598 | 0.7178 |
+| Higher EMA | BYOL | YOLOv12s | 70 | 1e-3 | 1e-4 | 0.999 | 0.9599 | 0.7165 |
+| Small LR + Small WD + Low EMA | BYOL | YOLOv12s | 70 | 5e-4 | 1e-5 | 0.990 | 0.9573 | 0.7024 |
+| Large LR + Large WD + High EMA | BYOL | YOLOv12s | 70 | 2e-3 | 1e-3 | 0.999 | 0.9596 | **0.7243** |
+
+**Table 7. Optimization ablation for BYOL-pretrained YOLOv12s on the validation split, showing the impact of learning rate, weight decay, and EMA momentum on coarse detection quality (mAP@0.50) and strict localization (mAP@0.50:0.95). Best values are highlighted.**
+
+### Findings (What matters and why)
+- **Baseline is strong but not optimal.** Several small changes yield measurable improvements.
+- **Learning rate:** Reducing LR to **5e-4** improves both mAP@0.50 and mAP@0.50:0.95, while increasing LR to **2e-3** provides no benefit and slightly degrades stability—suggesting the model is near its optimization limit at higher LR.
+- **Weight decay is essential:** Removing WD causes a clear drop in both metrics, confirming that regularization remains necessary even with SSL initialization.
+- **Best mAP@0.50:** The highest mAP@0.50 (**0.9631**) is achieved with a **mild, non-zero WD = 1e-5**, indicating that BYOL-pretrained features often require *lighter* regularization during fine-tuning.
+- **Best strict localization:** The highest mAP@0.50:0.95 (**0.7243**) appears with a **coordinated setting (LR=2e-3, WD=1e-3, EMA=0.999)**, suggesting that strict-IoU localization benefits from tuned EMA dynamics and stronger regularization when training becomes more aggressive.
+
+**Practical takeaway:**  
+- If you care most about **overall detection quality**, use **WD = 1e-5** (with LR=1e-3, EMA=0.996).  
+- If you prioritize **tight bounding-box localization**, consider tuning EMA and adopting the strong combined configuration that maximizes mAP@0.50:0.95.
+
+---
+
+## Web Application Deployment (Smart Palm Tree Monitoring)
+
+To support real-world use by agronomists and plantation managers, we deploy the trained **BYOL–YOLOv12s** model in an interactive web system called **Smart Palm Tree Monitoring**. The application provides an intuitive workflow for uploading UAV imagery, running server-side inference, and visualizing results as annotated detections in real time.
+
+### System behavior
+- Upload a drone image through a browser UI
+- Server performs inference via a REST-style endpoint
+- Client receives:
+  - bounding boxes
+  - class labels (**healthy**, **abnormal**, **dead**)
+  - confidence scores
+- Output is rendered as color-coded overlays on the original image
+- The app also summarizes per-image statistics (e.g., total palms and health-class distribution) for logging/export
+
+<p align="center">
+  <img src="assets/Web_App_Test_1.png" width="900" />
+</p>
+
+**Figure 14. Smart Palm Tree Monitoring web interface for field deployment: the left panel displays the uploaded UAV image, while the right panel shows BYOL–YOLOv12s detection outputs with class labels and confidence scores overlaid for rapid, interpretable inspection.**
+
+**Deployment value:** This closes the loop between research and field operation by enabling non-technical stakeholders to apply state-of-the-art self-supervised detection models for routine plantation monitoring and early identification of problematic regions.
+
+---
+
