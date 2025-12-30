@@ -54,7 +54,7 @@ We apply Albumentations-based augmentation **only on the training split** to imp
 - Compared: YOLOv10s / YOLOv11s / YOLOv12s  
 - Same protocol: 640×640, identical split, identical training recipe  
 - Chosen baseline: YOLOv12s
-
+![YOLOv12s](assets/yolov12s.png)
 🧠 Learning strategies  
 After selecting YOLOv12s, we explored methods to further improve generalization under plantation
 conditions (e.g., changes in viewpoint, illumination, canopy density, and background). We evaluated (i) a semi-supervised
