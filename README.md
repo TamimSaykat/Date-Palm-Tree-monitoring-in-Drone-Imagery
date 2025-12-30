@@ -27,7 +27,5 @@ We use the **Dat Palm Fx** dataset (Roboflow Universe), consisting of **4,802 RG
 
 ### Class Distribution
 
-<p align="center">
-  <img src="assets/class_distribution.jpg" width="600" alt="Per-class distribution">
-</p>
+![Per-class distribution](assets/class%20distribution.jpg)
 
