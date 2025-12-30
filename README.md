@@ -51,9 +51,12 @@ We apply Albumentations-based augmentation **only on the training split** to imp
 ### Models & Implementation
 
 🧱 Backbone benchmarking  
-- Compared: YOLOv10s / YOLOv11s / YOLOv12s  
-- Same protocol: 640×640, identical split, identical training recipe  
-- Chosen baseline: YOLOv12s
+We first trained three lightweight detectors: YOLOv10s, YOLOv11s, and YOLOv12s using the same
+dataset split, input size (640 × 640 ), and training setup to ensure a fair comparison. Among the tested backbones, YOLOv12s
+achieved the best overall detection performance and showed more stable learning behavior. Therefore, we chose YOLOv12s as
+the baseline backbone for the rest of this study.
+
+**Figure:** YOLOv12s architecture used as the baseline detector backbone.
 ![YOLOv12s](assets/yolov12s.png)
 🧠 Learning strategies  
 After selecting YOLOv12s, we explored methods to further improve generalization under plantation
