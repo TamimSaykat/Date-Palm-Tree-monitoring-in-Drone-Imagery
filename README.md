@@ -55,7 +55,7 @@ We apply Albumentations-based augmentation **only on the training split** to imp
 - Same protocol: 640×640, identical split, identical training recipe  
 - Chosen baseline: YOLOv12s
 
-🧠 Learning strategies (low-label regime)  
+🧠 Learning strategies  
 After selecting YOLOv12s, we explored methods to further improve generalization under plantation
 conditions (e.g., changes in viewpoint, illumination, canopy density, and background). We evaluated (i) a semi-supervised
 detection method (Soft Teacher) and (ii) two self-supervised learning (SSL) methods (BYOL and SimCLR). For SSL, we
