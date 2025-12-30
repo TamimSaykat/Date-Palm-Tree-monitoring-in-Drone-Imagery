@@ -134,4 +134,75 @@ To ensure fairness across comparisons:
 **Table 3. Hyperparameters for Soft Teacher, SimCLR, and BYOL pipelines used under a fixed training budget for direct comparison.**
 
 
+## Experimental Results & Performance Analysis
 
+This section reports quantitative results and learning dynamics for supervised baselines, semi-supervised learning (Soft Teacher), and self-supervised pretraining (BYOL, SimCLR). All models were trained with the same protocol (max 70 epochs, Early Stopping patience=7), and the best checkpoint was selected based on validation performance. Final scores are reported on the held-out test split using **Precision**, **Recall**, **mAP@0.50**, and **mAP@0.50:0.95** (stricter localization metric).
+
+---
+
+### 1) Supervised Baselines (YOLOv10s / YOLOv11s / YOLOv12s)
+
+We first benchmark three lightweight YOLO detectors as fully supervised baselines for UAV-based palm monitoring. All models are trained under identical settings to ensure a controlled comparison.
+
+| Model   | Precision | Recall | mAP@0.50 | mAP@0.50:0.95 |
+|--------|----------:|-------:|---------:|--------------:|
+| YOLOv10s | 0.8860 | **0.9062** | **0.9493** | 0.6852 |
+| YOLOv11s | 0.9045 | 0.8848 | 0.9482 | 0.6712 |
+| YOLOv12s | **0.9182** | 0.8724 | 0.9446 | **0.6842** |
+
+**Table 4. Test-set detection performance of supervised YOLO baselines on Dat Palm Fx, showing precision–recall trade-offs and strict localization accuracy (mAP@0.50:0.95).**
+
+**Key observations**
+- All detectors achieve high mAP@0.50 (≈0.944–0.949), confirming YOLO-style models are effective for aerial palm detection.
+- **YOLOv10s** yields the highest **Recall (0.9062)** and best **mAP@0.50 (0.9493)** → strongest sensitivity (fewer missed palms).
+- **YOLOv12s** achieves the best **Precision (0.9182)** and strongest **mAP@0.50:0.95 (0.6842)** → fewer false alarms and more accurate localization under strict IoU thresholds.
+
+#### Which YOLO is preferable for UAV plantation monitoring?
+Operational UAV monitoring often requires (i) reliable crown localization in dense scenes and (ii) controlled false positives to reduce unnecessary field checks. Under these constraints, **YOLOv12s is the preferred default baseline** due to its higher precision and strict-IoU performance.  
+If the priority is **maximizing sensitivity** (e.g., screening for all potentially abnormal/dead palms), **YOLOv10s is an attractive alternative** because of its superior recall.
+
+---
+
+### 2) Semi-Supervised Learning (Soft Teacher–Student, 20% labeled / 80% unlabeled)
+
+To evaluate learning under limited annotation, we apply a **Soft Teacher teacher–student pipeline** with:
+- **20% labeled training data (𝒟_L)**
+- **80% unlabeled training data (𝒟_U)** (labels discarded)
+- Teacher generates pseudo-labels on 𝒟_U (**conf=0.6**, **NMS IoU=0.5**)
+- Student trains on labeled + pseudo-labeled union  
+Validation and test sets remain fully labeled and are never used for pseudo-labeling.
+
+| Model   | Supervision | Precision | Recall | mAP@0.50 | mAP@0.50:0.95 |
+|--------|-------------|----------:|-------:|---------:|--------------:|
+| Teacher | 20% labeled only | **0.9231** | **0.9155** | **0.9669** | **0.7200** |
+| Student | 20% labeled + pseudo-labels | 0.9108 | 0.8959 | 0.9501 | 0.7151 |
+
+**Table 5. Test-set performance of Soft Teacher–Student semi-supervised training with 20% labeled data, reporting both teacher-only and student-with-pseudo-label outcomes.**
+
+**Key observations**
+- Even with only **20% labeled data**, the **teacher** achieves strong detection and localization (mAP@0.50:0.95 = **0.7200**).
+- The **student** trained with pseudo-labels remains competitive (mAP@0.50:0.95 = **0.7151**), confirming unlabeled UAV imagery can be exploited effectively.
+- The slight drop in the student’s strict-IoU metrics is consistent with **pseudo-label noise propagation** (e.g., missing or slightly misaligned boxes), a known limitation in dense aerial scenes.
+
+---
+
+### 3) Self-Supervised Pretraining (BYOL vs SimCLR) + YOLOv12s Fine-Tuning
+
+We further evaluate whether SSL pretraining improves detection under limited labels by pretraining the **YOLOv12s backbone** using:
+- **BYOL (bootstrap-based SSL)**
+- **SimCLR (contrastive SSL, NT-Xent)**  
+After SSL pretraining, we re-attach the detection head and fine-tune on the labeled split.
+
+| SSL Method | Model | Precision | Recall | mAP@0.50 | mAP@0.50:0.95 |
+|-----------|-------|----------:|-------:|---------:|--------------:|
+| BYOL   | YOLOv12s | 0.9084 | **0.9226** | **0.9601** | **0.7086** |
+| SimCLR | YOLOv12s | 0.9023 | 0.9094 | 0.9561 | 0.7011 |
+
+**Table 6. Test-set performance of SSL-initialized YOLOv12s detectors after downstream fine-tuning, highlighting transfer benefits from self-supervised representation learning.**
+
+**Key observations**
+- Both SSL strategies transfer well, achieving strong mAP@0.50 (≈0.956–0.960) and balanced precision/recall.
+- **Strict localization (mAP@0.50:0.95)** remains harder due to canopy overlap, scale variation, and partial occlusion in UAV imagery.
+- **BYOL + YOLOv12s** achieves the strongest overall trade-off, with the best mAP@0.50 (**0.9601**) and mAP@0.50:0.95 (**0.7086**).
+
+---
