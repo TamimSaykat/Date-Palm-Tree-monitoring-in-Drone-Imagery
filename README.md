@@ -253,7 +253,8 @@ To support real-world use by agronomists and plantation managers, we deploy the 
 - Output is rendered as color-coded overlays on the original image
 - The app also summarizes per-image statistics (e.g., total palms and health-class distribution) for logging/export
 
-![Web Application](assets/web_application_test.png)
+![Web Application](https://raw.githubusercontent.com/TamimSaykat/Date-Palm-Tree-monitoring-in-Drone-Imagery/main/assets/Web%20Application%20Test.png)
+
 
 
 
