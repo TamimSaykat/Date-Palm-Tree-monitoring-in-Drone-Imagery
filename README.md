@@ -56,9 +56,12 @@ We apply Albumentations-based augmentation **only on the training split** to imp
 - Chosen baseline: YOLOv12s
 
 🧠 Learning strategies (low-label regime)  
-- Soft Teacher: teacher–student pseudo-labeling  
-- BYOL / SimCLR: self-supervised pretraining on unlabeled UAV images  
-  (pretrain backbone as encoder → reattach head → fine-tune)
+After selecting YOLOv12s, we explored methods to further improve generalization under plantation
+conditions (e.g., changes in viewpoint, illumination, canopy density, and background). We evaluated (i) a semi-supervised
+detection method (Soft Teacher) and (ii) two self-supervised learning (SSL) methods (BYOL and SimCLR). For SSL, we
+removed the detection head and used the YOLOv12s backbone as an encoder to learn strong visual representations from
+augmented views of the same image. After pretraining, we re-attached the detection head and fine-tuned the full detector on the
+labeled training set.
 
 🧩 Proposed model  
 In our experiments, BYOL produced the most effective representations and achieved the highest
