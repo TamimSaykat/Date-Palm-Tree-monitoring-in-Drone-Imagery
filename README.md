@@ -253,12 +253,12 @@ To support real-world use by agronomists and plantation managers, we deploy the 
 - Output is rendered as color-coded overlays on the original image
 - The app also summarizes per-image statistics (e.g., total palms and health-class distribution) for logging/export
 
-![Web Application](assets/Web Application Test .png)
-Web Application Test .png
+![Web Application](assets/Web Application Test.png)
+
 
 **Figure 14. Smart Palm Tree Monitoring web interface for field deployment: the left panel displays the uploaded UAV image, while the right panel shows BYOL–YOLOv12s detection outputs with class labels and confidence scores overlaid for rapid, interpretable inspection.**
 
-**Deployment value:** This closes the loop between research and field operation by enabling non-technical stakeholders to apply state-of-the-art self-supervised detection models for routine plantation monitoring and early identification of problematic regions.
+
 
 ---
 
