@@ -74,6 +74,64 @@ detection model.
 **Figure:** BYOL pretraining architecture used to initialize the YOLOv12s backbone. The online network (encoder–projector–predictor) learns to match the target network (encoder–projector), updated via EMA, across two augmented views of the same UAV image.
 ![BYOL Self-Supervised Learning Architecture](assets/Figure5.png)
 
+## Training Setup
+
+All experiments run on **Kaggle** with:
+- **2× NVIDIA T4 GPUs**
+- **CUDA 12.4**
+- **PyTorch 2.6.0**
+- **Ultralytics YOLO framework**
+
+To ensure fairness across comparisons:
+- Same input size: **640×640** (YOLO fine-tuning)
+- Same training budget: **up to 70 epochs**
+- **SGD** optimizer, momentum **0.937**
+- EMA **0.996**
+- Cosine LR schedule, initial LR = **1e-3**
+- Early stopping patience = **7**
+
+### Supervised YOLO hyperparameters (our settings)
+
+| Hyperparameter | YOLOv12-s | YOLOv11-s | YOLOv10-s |
+|---|---:|---:|---:|
+| Pretrained Weights | yolov12s.pt | yolov11s.pt | yolov10s.pt |
+| Image Size | 640 | 640 | 640 |
+| Batch Size | 8 | 8 | 8 |
+| Epochs (max) | 70 | 70 | 70 |
+| Early Stopping | patience=7 | patience=7 | patience=7 |
+| LR (init) | 1e-3 | 1e-3 | 1e-3 |
+| LR Schedule | cosine | cosine | cosine |
+| Optimizer | SGD | SGD | SGD |
+| Momentum | 0.937 | 0.937 | 0.937 |
+| EMA | 0.996 | 0.996 | 0.996 |
+| Weight Decay | 5e-4 | 5e-4 | 5e-4 |
+| Warm-up | 3 epochs | 3 epochs | 3 epochs |
+| Loss | BCE + DFL | BCE + DFL | BCE + DFL |
+| AMP | True | True | True |
+
+**Table 2. Controlled training settings used to compare YOLO backbones under identical compute budget and preprocessing.**
+
+### SSL & semi-supervised pipeline settings
+
+| Setting | Soft Teacher–Student | SimCLR | BYOL |
+|---|---:|---:|---:|
+| Paradigm | Semi-supervised | Self-supervised | Self-supervised |
+| Labeled/Unlabeled | 20% / 80% | — | — |
+| SSL Optimizer | — | AdamW | AdamW |
+| SSL LR | — | 1e-3 | 1e-3 |
+| SSL WD | — | 1e-4 | 1e-4 |
+| SSL Image Size | — | 320 | 320 |
+| SSL Batch | — | 8 | 8 |
+| SSL Epochs | — | 70 | 70 |
+| SSL Loss | — | NT-Xent | BYOL loss |
+| Projection Head | — | hidden=2048, out=128 | proj: 512→256; pred: 256→512→256 |
+| Temp / EMA | — | T=0.2 | m0=0.996 |
+| Pseudo-label conf | 0.6 | — | — |
+| NMS IoU | 0.5 | — | — |
+| Fine-tune imgsz | 640 | 640 | 640 |
+| Fine-tune opt | SGD | SGD | SGD |
+
+**Table 3. Hyperparameters for Soft Teacher, SimCLR, and BYOL pipelines used under a fixed training budget for direct comparison.**
 
 
 
