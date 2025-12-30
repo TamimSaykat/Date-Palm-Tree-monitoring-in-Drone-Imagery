@@ -28,7 +28,8 @@ We use the **Dat Palm Fx** dataset (Roboflow Universe), consisting of **4,802 RG
 ### Class Distribution
 
 <p align="center">
-  <img src="assets/class_distribution.jpg" width="700" alt="Per-class distribution">
+  <img src="https://raw.githubusercontent.com/TamimSaykat/Date-Palm-Tree-monitoring-in-Drone-Imagery/main/assets/class%20distribution.jpg" width="700" alt="Per-class distribution">
 </p>
+
 
 
